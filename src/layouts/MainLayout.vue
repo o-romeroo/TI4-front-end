@@ -21,8 +21,8 @@
             <v-btn variant="plain" to="/execution">
               <p style="color: black; font-weight: bold">Execute</p>
             </v-btn>
-            <v-btn variant="plain" to="/teste">
-              <p style="color: black; font-weight: bold">Teste</p>
+            <v-btn variant="plain" to="/data">
+              <p style="color: black; font-weight: bold">Data</p>
             </v-btn>
             <v-btn variant="plain" to="/algorithm">
               <p style="color: black; font-weight: bold">Algorithm</p>
@@ -32,9 +32,6 @@
             </v-btn>
             <v-btn variant="plain" to="/support">
               <p style="color: black; font-weight: bold">Support</p>
-            </v-btn>
-            <v-btn variant="plain" to="/data">
-              <p style="color: black; font-weight: bold">Data</p>
             </v-btn>
             <v-divider class="mx-2" vertical></v-divider>
             <v-btn v-if="!isLogged" variant="plain" to="/login">
@@ -53,7 +50,7 @@
     </v-main>
 
     <v-footer app class="footer">
-      <span>Copyright © 2022 Vuetify</span>
+      <span>Copyright © 2024 Massa Software</span>
     </v-footer>
   </v-app>
 </template>

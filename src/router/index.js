@@ -25,10 +25,6 @@ const routes = [
         component: Execution
       },
       {
-        path: 'teste',
-        component: Teste
-      },
-      {
         path: 'algorithm',
         component: Algorithm
       },

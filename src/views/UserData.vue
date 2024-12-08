@@ -14,7 +14,21 @@
             <v-card-text>
                 <v-tabs-window v-model="tab">
                     <v-tabs-window-item value="one">
-                        <v-card variant="tonal" title="Number of biological activities" text="The number of biological activities analysed so far is: " v-slot:item="lastValue"></v-card>
+                        <v-card variant="tonal" title="Number of biological activities" style="flex-direction: column;">
+                            <div class="d-flex align-center" style="margin-left: 15px;">
+                                <span class="text-subtitle-1">Average number of molecules per biological activity:</span>
+                                <v-chip class="text-subtitle-1" :value="moleculeCountAvg" variant="text">
+                                    {{ moleculeCountAvg }}
+                                </v-chip>
+                            </div>
+                            <div class="d-flex align-center" style="margin-left: 15px; margin-bottom: 15px;">
+                                <span class="text-subtitle-1">Number of biological activities analysed so far:</span>
+                                <v-chip class="text-subtitle-1" :value="biologicalActivityTotal" variant="text">
+                                    {{ biologicalActivityTotal }}
+                                </v-chip>
+                            </div>
+                        </v-card>
+
 
                         <v-card class="mt-8 mx-auto overflow-visible" max-width="400">
                             <v-sheet class="v-sheet--offset mx-auto" color="#092F47" elevation="12"
@@ -31,13 +45,13 @@
                                     Number of biological activities analysed
                                 </div>
                                 <v-divider class="my-2"></v-divider>
-                                
+
                             </v-card-text>
                         </v-card>
 
                     </v-tabs-window-item>
 
-                    <v-tabs-window-item value="two" >
+                    <v-tabs-window-item value="two">
                         <v-card variant="tonal" title="Users cities"
                             text="The cities that the Massa Software users are from are:"></v-card>
 
@@ -54,7 +68,8 @@
                             </v-card-title>
 
                             <v-divider></v-divider>
-                            <v-data-table v-model:search="search" :filter-keys="['name']" :items="cities" :page="page" :items-per-page="itemsPerPage">
+                            <v-data-table v-model:search="search" :filter-keys="['name']" :items="cities" :page="page"
+                                :items-per-page="itemsPerPage">
                                 <template v-slot:header.Name>
                                     <div class="text-end">Name</div>
                                 </template>
@@ -80,46 +95,54 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import ContentBanner from '@/components/ContentBanner.vue';
 import { getIpInfos } from '@/services/Geolocation';
 import { getCountryName } from '@/services/Geolocation';
 import { useStatsStore } from '@/stores/stats';
 
-const stats = useStatsStore();
+const statsStore = useStatsStore();
 
 const banner = {
     title: "User Data",
     description: "Data collected from users",
 };
-//Tab configuration
+
 const tab = ref(null);
 
-//Molecules data
-const labels = ref(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
-const values = ref([0, 0, 0, 0, 0, 0, 0]);
-const lastValue = ref(0);
-
-//Cities + Countries table
-const page = ref(1);
-const itemsPerPage = 10;
-const search = ref('');
-const cities = ref([]);
-const pageCount = ref(0);
+const stats = ref(null);
 const statsError = ref(null);
+
 const ipInfo = ref(null);
 const ipError = ref(null);
 
-async function fillStatsInfos() {
+const cities = ref([]);
+const page = ref(1);
+const itemsPerPage = 10;
+const search = ref('');
+const pageCount = ref(0);
+
+
+
+const biologicalActivitiesPerDay = ref({});
+const labels = ref(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
+const values = ref([0, 0, 0, 0, 0, 0, 0]);
+
+
+const moleculeCountAvg = computed(() => stats.value?.molecule_count_avg || 0);
+const biologicalActivityTotal = computed(() => stats.value?.biological_activity_total || 0);
+
+async function fetchStats() {
     try {
-        stats.value = await getStats();
-        values.value = stats.value.map(stat => stat.biological_activity_count)
-        lastValue.value = lastValue.value + stats.value.some(biological_activity_count)
+        stats.value = await statsStore.fetchStats();
+        // Atualiza os valores com base na resposta do backend
+        const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        values.value = daysOfWeek.map(day => stats.value.biological_activities_per_day[day] || 0);
     } catch (error) {
         statsError.value = error;
-        return;
     }
 }
+
 
 async function fillIpInfos() {
     try {
@@ -137,14 +160,19 @@ async function fillIpInfos() {
             country: getCountryName(ipInfo.value.country),
         });
     }
-    
+
     // Update page counts
     pageCount.value = Math.ceil(cities.value.length / itemsPerPage);
 }
 
-onMounted(() => {
-    fillIpInfos(), fillStatsInfos().then(() => {
-    });
+onMounted(async () => {
+
+    await Promise.all([
+        fillIpInfos(),
+        fetchStats()
+
+    ])
+
 });
 </script>
 
