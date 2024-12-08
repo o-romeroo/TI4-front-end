@@ -2,12 +2,12 @@ import axios from 'axios';
 import API_URL from '@/config/api';
 import { useMassaStore } from '@/stores/massa';
 import { useDialogStore } from '@/stores/dialog';
-import { useUserStore } from '@/stores/user';
+import { useAuthStore } from '@/stores/auth';
 
 class ExecutionService {
   massaStore = useMassaStore();
   dialogStore = useDialogStore();
-  userStore = useUserStore();
+  authStore = useAuthStore();
 
   async uploadFile() {
 
@@ -17,13 +17,12 @@ class ExecutionService {
     }
 
     const formData = new FormData();
-    formData.append("session_id", this.userStore.sessionId)
     formData.append("file", this.massaStore.file);
 
     try {
       const response = await axios.post(`${API_URL}/executions/create`, formData, {
         headers: {
-          Authorization: `Bearer ${this.userStore.token}`,
+          Authorization: `Bearer ${this.authStore.token}`,
           'Content-Type': 'multipart/form-data'
         }
       });

@@ -4,7 +4,7 @@ import RegisterService from '@/services/RegisterService';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    isAuthenticated: false,
+    isAuthenticated: !!localStorage.getItem('token'),
     token: localStorage.getItem('token') || null,
   }),
   getters: {
@@ -23,10 +23,19 @@ export const useAuthStore = defineStore('auth', {
     },
     async register(userData) {
       try {
-        const user = await RegisterService.register(userData)
+        const token = await RegisterService.register(userData);
+        this.token = token;
+        this.isAuthenticated = true;
         return user
       } catch (error) {
         throw error;
+      }
+    },
+    async getUserLogged() {
+      if (this.token !== null) {
+        return true;
+      }else {
+        return false;
       }
     },
     logout() {

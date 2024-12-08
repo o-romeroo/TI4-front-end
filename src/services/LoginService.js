@@ -13,8 +13,9 @@ class LoginService {
             );
 
             if(response.status === 200) {
+                console.log(response.data);
                 const access_token = response.data.token;
-      
+                
                 localStorage.setItem('token', access_token);  
                 return access_token;
             }
