@@ -21,12 +21,13 @@ const vuetify = createVuetify({
 });
 
 // Cria a aplicação
+const pinia = createPinia();
 const app = createApp(App);
 
 // Usa o Vuetify, Pinia e o router
 app.use(router);
 app.use(vuetify);
-app.use(createPinia());
+app.use(pinia);
 
 
 // Monta a aplicação

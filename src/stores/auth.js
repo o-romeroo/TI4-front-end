@@ -14,6 +14,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         const token = await LoginService.login(username, password);
         this.token = token;
+        localStorage.setItem('token', this.token);
         this.isAuthenticated = true;
       } catch (error) {
         this.isAuthenticated = false;
@@ -25,6 +26,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         const token = await RegisterService.register(userData);
         this.token = token;
+        localStorage.setItem('token', this.token);
         this.isAuthenticated = true;
         return user
       } catch (error) {
@@ -42,7 +44,6 @@ export const useAuthStore = defineStore('auth', {
       LoginService.logout();
       this.isAuthenticated = false;
       this.token = null;
-      this.user = null;
     },
   },
 });

@@ -51,6 +51,9 @@
 
 <script setup>
 import ContentBanner from '@/components/ContentBanner.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const banner = {
   title: "Welcome to the Massa",
@@ -150,11 +153,11 @@ const dropdownValues = [
 ];
 
 function openExecutionComponent() {
-  window.location.href = '/execution';
+  router.push('/execution');
 };
 
 function openTutorialComponent() {
-  window.location.href = '/support';
+  router.push('/support');
 };
 </script>
 
