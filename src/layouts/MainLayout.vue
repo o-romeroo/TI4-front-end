@@ -116,6 +116,7 @@ export default {
       const authStore = useAuthStore();
       try {
         await authStore.logout();
+        this.$router.push('/login');
       } catch (error) {
         console.error("Logout error:", error);
       }
