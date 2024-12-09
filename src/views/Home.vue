@@ -17,7 +17,7 @@
     </div>
     <v-row>
       <v-col v-for="item in items" cols="4" style="width: 100%; display: flex; justify-content: center;">
-        <v-btn variant="text" size="140" :prepend-icon="item.icon" :ripple="false" stacked
+        <v-btn variant="text" size="140" :prepend-icon="item.icon" :ripple="false" stacked :readonly="true"
           @click="selectCategory(item.category)">
           {{ item.text }}
           <p class="text-subtitle-2" style="margin-top: 0.5rem;">{{ item.subtext }}</p>
